@@ -36,10 +36,9 @@ with DAG(
     KubernetesPodOperator(
         task_id="embedding_benchmarking",
         name="embedding",
-        image="eu.gcr.io/apis-198609/probe-sparql-mono:latest",
+        image="stadgent/probe-sparql-mono:latest",
         in_cluster=True,
         get_logs=True,
-        image_pull_secrets=[k8s.V1LocalObjectReference("image-pull-secret")],
         image_pull_policy="Always",
         startup_timeout_seconds=480,
         env_vars={
