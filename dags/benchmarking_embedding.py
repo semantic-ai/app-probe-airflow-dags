@@ -36,7 +36,6 @@ with DAG(
     KubernetesPodOperator(
         task_id="embedding_benchmarking",
         name="embedding",
-        namespace="probe",
         image="eu.gcr.io/apis-198609/probe-sparql-mono:latest",
         in_cluster=True,
         get_logs=True,

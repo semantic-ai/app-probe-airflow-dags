@@ -24,7 +24,6 @@ with DAG(
     KubernetesPodOperator(
         task_id="test",
         name="test",
-        namespace="probe",
         image="eu.gcr.io/apis-198609/probe-sparql-mono:latest",
         in_cluster=True,
         get_logs=True,

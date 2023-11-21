@@ -29,7 +29,6 @@ with DAG(
     KubernetesPodOperator(
         task_id="dataset_export",
         name="export",
-        namespace="probe",
         image="eu.gcr.io/apis-198609/probe-sparql-mono:latest",
         in_cluster=True,
         get_logs=True,
