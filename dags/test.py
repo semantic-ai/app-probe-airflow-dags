@@ -30,7 +30,7 @@ with DAG(
         image_pull_policy="Always",
         startup_timeout_seconds=480,
         env_vars={
-            "HF_ACCESS_TOKEN": Variable.get("HF_ACCESS_TOKEN"),
+            "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),
             "MLFLOW_TRACKING_PASSWORD": Variable.get("MLFLOW_TRACKING_PASSWORD"),

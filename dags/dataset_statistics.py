@@ -34,7 +34,7 @@ with DAG(
         image_pull_policy="Always",
         startup_timeout_seconds=480,
         env_vars={
-            "HF_ACCESS_TOKEN": Variable.get("HF_ACCESS_TOKEN"),
+            "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),
             "MLFLOW_TRACKING_PASSWORD": Variable.get("MLFLOW_TRACKING_PASSWORD"),
@@ -44,7 +44,7 @@ with DAG(
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
             "REQUEST_ENDPOINT_TAXONOMY": Variable.get("REQUEST_ENDPOINT_TAXONOMY"),
             "LOGGING_LEVEL": "INFO",
-            "GIT_PYTHON_REFRESH":"quiet",
+            "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "1",
             "PYTHONWARNINGS": "ignore"
         },
