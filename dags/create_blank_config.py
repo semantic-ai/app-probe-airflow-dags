@@ -16,18 +16,16 @@ default_args = {
 
 
 with DAG(
-    dag_id="dataset_statistics",
+    dag_id="blank_config",
     schedule_interval="@once",
     default_args=default_args,
     catchup=False,
-    params={
-        "max_depth": 4
-    },
-    tags=["dataset"]
+    params={},
+    tags=["helper"]
 ) as dag:
     KubernetesPodOperator(
-        task_id="dataset_statistics",
-        name="statistics",
+        task_id="blank_config",
+        name="blank_config",
         image="stadgent/probe-sparql-mono:latest",
         in_cluster=True,
         get_logs=True,
@@ -39,7 +37,7 @@ with DAG(
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),
             "MLFLOW_TRACKING_PASSWORD": Variable.get("MLFLOW_TRACKING_PASSWORD"),
-            "MLFLOW_EXPERIMENT_NAME": "dataset_statistics",
+            "MLFLOW_EXPERIMENT_NAME": "blank_configs",
             "REQUEST_USERNAME": Variable.get("REQUEST_USERNAME"),
             "REQUEST_PASSWORD": Variable.get("REQUEST_PASSWORD"),
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
@@ -52,7 +50,6 @@ with DAG(
         cmds=[
             "python",
             "-m",
-            "src.dataset_statistics",
-            "--max_level={{ params.max_depth }}"
+            "src.create_blank_config"
         ]
     )

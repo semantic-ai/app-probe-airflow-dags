@@ -16,7 +16,7 @@ default_args = {
 
 
 with DAG(
-    dag_id="zeroshot_benchmarking",
+    dag_id="embedding_zeroshot",
     schedule_interval="@once",
     default_args=default_args,
     catchup=False,
@@ -34,13 +34,14 @@ with DAG(
     tags=["benchmarking"]
 ) as dag:
     KubernetesPodOperator(
-        task_id="zeroshot_benchmarking",
+        task_id="embedding_zeroshot",
         name="zeroshot",
         image="stadgent/probe-sparql-mono:latest",
         in_cluster=True,
         get_logs=True,
         image_pull_policy="Always",
         startup_timeout_seconds=480,
+        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "8", "memory": "8G"}),
         env_vars={
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),

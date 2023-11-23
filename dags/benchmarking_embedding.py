@@ -34,13 +34,14 @@ with DAG(
     tags=["benchmarking"]
 ) as dag:
     KubernetesPodOperator(
-        task_id="embedding_benchmarking",
+        task_id="benchmark_embedding",
         name="embedding",
         image="stadgent/probe-sparql-mono:latest",
         in_cluster=True,
         get_logs=True,
         image_pull_policy="Always",
         startup_timeout_seconds=480,
+        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "8", "memory": "8G"}),
         env_vars={
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
