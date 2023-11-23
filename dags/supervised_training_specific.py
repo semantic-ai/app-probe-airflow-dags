@@ -49,7 +49,7 @@ with DAG(
         command += ["--taxonomy_sub_node={{ params.taxonomy_sub_node }}"]
 
     KubernetesPodOperator(
-        task_id="node_training",
+        task_id="train_supervised_node",
         name="train_supervised_node",
         image="stadgent/probe-sparql-mono:latest",
         in_cluster=True,

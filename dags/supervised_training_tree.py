@@ -44,7 +44,7 @@ with DAG(
         command += ["--taxonomy_url={{ params.taxonomy_uri }}"]
 
     KubernetesPodOperator(
-        task_id="tree_training",
+        task_id="train_supervised_tree",
         name="train_supervised_tree",
         image="stadgent/probe-sparql-mono:latest",
         in_cluster=True,
