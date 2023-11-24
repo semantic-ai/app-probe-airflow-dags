@@ -48,6 +48,7 @@ with DAG(
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),
             "MLFLOW_TRACKING_PASSWORD": Variable.get("MLFLOW_TRACKING_PASSWORD"),
             "MLFLOW_EXPERIMENT_NAME": "embedding_benchmarking",
+            "REQUEST_AUTH_TYPE": Variable.get("REQUEST_AUTH_TYPE"),
             "REQUEST_USERNAME": Variable.get("REQUEST_USERNAME"),
             "REQUEST_PASSWORD": Variable.get("REQUEST_PASSWORD"),
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),

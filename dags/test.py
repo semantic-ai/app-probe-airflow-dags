@@ -36,6 +36,7 @@ with DAG(
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),
             "MLFLOW_TRACKING_PASSWORD": Variable.get("MLFLOW_TRACKING_PASSWORD"),
+            "REQUEST_AUTH_TYPE": Variable.get("REQUEST_AUTH_TYPE"),
             "REQUEST_USERNAME": Variable.get("REQUEST_USERNAME"),
             "REQUEST_PASSWORD": Variable.get("REQUEST_PASSWORD"),
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
