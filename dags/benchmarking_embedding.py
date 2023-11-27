@@ -24,7 +24,7 @@ with DAG(
     catchup=False,
     params={
         "model_types": Param(["embedding"], type="array", examples=[t for t in enums.MODEL_TYPES if t.startswith("embedding")] + ["embedding"]),
-        "dataset_types": Param(["m1"], type="array", examples=enums.DATASET_TYPES + ["m1_", "m2_", "..."]),
+        "dataset_types": Param(["m1"], type="array", examples=enums.DATASET_TYPES + ["m1", "m2"]),
         "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS),
         "model_ids": enums.EMBEDDING_MODELS
     },

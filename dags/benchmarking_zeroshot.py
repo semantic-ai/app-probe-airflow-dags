@@ -25,7 +25,7 @@ with DAG(
     catchup=False,
     params={
         "model_types": Param(["zeroshot"], type="array", examples=[t for t in enums.MODEL_TYPES if t.startswith("zeroshot")] + ["zeroshot"]),
-        "dataset_types": Param(["m1"], type="array", examples=enums.DATASET_TYPES + ["m1_", "m2_", "..."]),
+        "dataset_types": Param(["m1"], type="array", examples=enums.DATASET_TYPES + ["m1", "m2"]),
         "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS),
         "model_ids": enums.ZEROSHOT_MODELS
     },
