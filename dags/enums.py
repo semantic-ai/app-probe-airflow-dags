@@ -15,7 +15,7 @@ DATASET_TYPES = [
     # single label dataset0
     "s1_general",
     # multilabel dataset
-    "m2_general", "m1_general", "m1_article", "m1_article_split", "m1_description", "m1_motivation", "m1_shorttitle"
+    "m2_general", "m1_general", "m1_article", "m1_article_split", "m1_description", "m1_motivation", "m1_shorttitle",
     # dynamic dataset for node based selection
     "dynamic_general",
     # summary statistics dataset

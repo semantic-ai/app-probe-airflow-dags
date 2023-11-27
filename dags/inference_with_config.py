@@ -22,7 +22,7 @@ with DAG(
         default_args=default_args,
         catchup=False,
         params={
-            "dataset_type": Param("m1_regular", enum=enums.DATASET_TYPES),
+            "dataset_type": Param("m1_general", enum=enums.DATASET_TYPES),
             "model_config": Param(enums.INFERENCE_CONFIG_EXAMPLE, type=["object", "null"]),
             "taxonomy_uri": Param("http://stad.gent/id/concepts/business_capabilities", enum=enums.TAXONOMY_URIS),
         },
