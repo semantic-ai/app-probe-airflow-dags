@@ -1,5 +1,6 @@
 from datetime import datetime
 import logging
+import enums
 
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
@@ -21,9 +22,9 @@ with DAG(
         default_args=default_args,
         catchup=False,
         params={
-            "dataset_type": "m1_regular",
-            "model_config": {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__parent_node", "stage": "Production", "sub_nodes": [{"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__ondersteunende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_90"}, {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__sturende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_1"}, {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__uitvoerende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_13"}], "uri": "http://stad.gent/id/concepts/business_capabilities"},
-            "taxonomy_uri": "http://stad.gent/id/concepts/business_capabilities",
+            "dataset_type": Param("m1_regular", enum=enums.DATASET_TYPES),
+            "model_config": Param(enums.INFERENCE_CONFIG_EXAMPLE, type=["object", "null"]),
+            "taxonomy_uri": Param("http://stad.gent/id/concepts/business_capabilities", enum=enums.TAXONOMY_URIS),
         },
         tags=["inference"]
 ) as dag:

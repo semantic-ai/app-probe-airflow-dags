@@ -1,9 +1,11 @@
 from datetime import datetime
+import enums
 import logging
 
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
+from airflow.models.param import Param
 
 from kubernetes.client import models as k8s
 
@@ -21,8 +23,8 @@ with DAG(
     default_args=default_args,
     catchup=False,
     params={
-        "dataset_type": "mirror",
-        "taxonomy_uri": "http://stad.gent/id/concepts/gent_words"
+        "dataset_type": Param("mirror", enum=enums.DATASET_TYPES),
+        "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS)
     },
     tags=["dataset"]
 ) as dag:

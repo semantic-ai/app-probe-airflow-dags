@@ -4,8 +4,11 @@ import logging
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
+from airflow.models.param import Param
 
 from kubernetes.client import models as k8s
+
+import enums
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,15 +24,10 @@ with DAG(
     default_args=default_args,
     catchup=False,
     params={
-        "model_types": ["zeroshot"],
-        "dataset_types": ["m1"],
-        "taxonomy_uri": "http://stad.gent/id/concepts/gent_words",
-        "model_ids": [
-            "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
-            "facebook/bart-large-mnli",
-            "mjwong/multilingual-e5-base-xnli-anli",
-            "joeddav/xlm-roberta-large-xnli"
-        ]
+        "model_types": Param(["zeroshot"], type="array", examples=[t for t in enums.MODEL_TYPES if t.startswith("zeroshot")] + ["zeroshot"]),
+        "dataset_types": Param(["m1"], type="array", examples=enums.DATASET_TYPES + ["m1_", "m2_", "..."]),
+        "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS),
+        "model_ids": enums.ZEROSHOT_MODELS
     },
     tags=["benchmarking"]
 ) as dag:

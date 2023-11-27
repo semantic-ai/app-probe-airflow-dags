@@ -1,5 +1,6 @@
 from datetime import datetime
 import logging
+import enums
 
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
@@ -21,9 +22,9 @@ with DAG(
         default_args=default_args,
         catchup=False,
         params={
-            "train_flavour": "bert",
-            "dataset_type": "dynamic_general",
-            "taxonomy_uri": "http://stad.gent/id/concepts/business_capabilities",
+            "train_flavour": Param("bert", enum=enums.TRAIN_FLAVOURS),
+            "dataset_type": Param("dynamic_general", enum=enums.DATASET_TYPES),
+            "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS),
             "model_id": Param(None, type=["null", "string"]),
             "train_test_split": Param(True, type="boolean"),
             "use_predefined_split": Param(False, type="boolean"),

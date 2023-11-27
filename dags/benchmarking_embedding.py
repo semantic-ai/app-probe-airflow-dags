@@ -1,9 +1,11 @@
 from datetime import datetime
 import logging
+import enums
 
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
+from airflow.models.param import Param
 
 from kubernetes.client import models as k8s
 
@@ -21,15 +23,10 @@ with DAG(
     default_args=default_args,
     catchup=False,
     params={
-        "model_types": ["embedding"],
-        "dataset_types": ["m1"],
-        "taxonomy_uri": "http://stad.gent/id/concepts/gent_words",
-        "model_ids": [
-            "paraphrase-multilingual-mpnet-base-v2",
-            "intfloat/multilingual-e5-small",
-            "thenlper/gte-large",
-            "multi-qa-mpnet-base-dot-v1"
-        ]
+        "model_types": Param(["embedding"], type="array", examples=[t for t in enums.MODEL_TYPES if t.startswith("embedding")] + ["embedding"]),
+        "dataset_types": Param(["m1"], type="array", examples=enums.DATASET_TYPES + ["m1_", "m2_", "..."]),
+        "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS),
+        "model_ids": enums.EMBEDDING_MODELS
     },
     tags=["benchmarking"]
 ) as dag:

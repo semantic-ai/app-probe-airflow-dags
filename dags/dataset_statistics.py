@@ -4,6 +4,7 @@ import logging
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
+from airflow.models.param import Param
 
 from kubernetes.client import models as k8s
 
@@ -21,7 +22,7 @@ with DAG(
     default_args=default_args,
     catchup=False,
     params={
-        "max_depth": 4
+        "max_depth": Param(4, type="integer", minimum=1, multipleOf=10)
     },
     tags=["dataset"]
 ) as dag:
