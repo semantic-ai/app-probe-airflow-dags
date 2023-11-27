@@ -18,7 +18,7 @@ default_args = {
 
 
 with DAG(
-    dag_id="embedding_benchmarking",
+    dag_id="benchmark_embedding",
     schedule_interval="@once",
     default_args=default_args,
     catchup=False,

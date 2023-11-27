@@ -19,7 +19,7 @@ default_args = {
 
 
 with DAG(
-    dag_id="embedding_zeroshot",
+    dag_id="benchmark_zeroshot",
     schedule_interval="@once",
     default_args=default_args,
     catchup=False,
@@ -32,7 +32,7 @@ with DAG(
     tags=["benchmarking"]
 ) as dag:
     KubernetesPodOperator(
-        task_id="embedding_zeroshot",
+        task_id="benchmark_zeroshot",
         name="zeroshot",
         image="stadgent/probe-sparql-mono:latest",
         in_cluster=True,
