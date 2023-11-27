@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../')
+
 from datetime import datetime
 import logging
 
@@ -22,7 +25,7 @@ with DAG(
     default_args=default_args,
     catchup=False,
     params={
-        "max_depth": Param(4, type="integer", minimum=1, multipleOf=10)
+        "max_depth": Param(4, type="integer", minimum=1, maximum=10)
     },
     tags=["dataset"]
 ) as dag:
