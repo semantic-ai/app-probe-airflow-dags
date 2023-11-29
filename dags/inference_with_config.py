@@ -33,7 +33,7 @@ with DAG(
         "-m",
         "src.inference_with_config",
         "--dataset_type={{ params.dataset_type }}",
-        "--model_config={{ params.model_config }}",
+        "--model_config='''{{ params.model_config }}'''",
         "--taxonomy_uri={{ params.taxonomy_uri }}"
 
     ]
