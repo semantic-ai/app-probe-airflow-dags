@@ -65,7 +65,6 @@ with DAG(
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
             "REQUEST_ENDPOINT_TAXONOMY": Variable.get("REQUEST_ENDPOINT_TAXONOMY"),
             "RUNS_DATASET_USE_PREDEFINED_SPLIT": str(dag.params.get("use_predefined_split", False)),
-            "RUNS_DATASET_GET_LABEL": str(False),
             "LOGGING_LEVEL": "INFO",
             "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "1"
