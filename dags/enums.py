@@ -1,6 +1,4 @@
-from typing import Any
-
-MODEL_TYPES: list[str] = [
+MODEL_TYPES = [
     # zeroshot models
     "zeroshot_regular", "zeroshot_sentence", "zeroshot_chunked", "zeroshot_child_labels",
     # embedding models
@@ -11,7 +9,7 @@ MODEL_TYPES: list[str] = [
     "hybrid_base_model", "hybrid_selective_model"
 ]
 
-DATASET_TYPES: list[str] = [
+DATASET_TYPES = [
     # return pulled dataset
     "mirror",
     # single label dataset0
@@ -24,30 +22,30 @@ DATASET_TYPES: list[str] = [
     "summary_stat_dataset"
 ]
 
-TAXONOMY_URIS: list[str] = [
+TAXONOMY_URIS = [
     "http://stad.gent/id/concepts/gent_words",
     "http://stad.gent/id/concepts/policy_domains_themes",
     "http://stad.gent/id/concepts/business_capabilities"
 ]
 
-EMBEDDING_MODELS: list[str] = [
+EMBEDDING_MODELS = [
     "paraphrase-multilingual-mpnet-base-v2",
     "intfloat/multilingual-e5-small",
     "thenlper/gte-large",
     "multi-qa-mpnet-base-dot-v1"
 ]
 
-ZEROSHOT_MODELS: list[str] = [
+ZEROSHOT_MODELS = [
     "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
     "facebook/bart-large-mnli",
     "mjwong/multilingual-e5-base-xnli-anli",
     "joeddav/xlm-roberta-large-xnli"
 ]
 
-TRAIN_FLAVOURS: list[str] =[
+TRAIN_FLAVOURS =[
     "bert", "setfit", "distilbert"
 ]
 
 INFERENCE_CONFIG_EXAMPLE: dict[str, Any] = {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__parent_node", "stage": "Production", "sub_nodes": [{"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__ondersteunende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_90"}, {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__sturende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_1"}, {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__uitvoerende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_13"}], "uri": "http://stad.gent/id/concepts/business_capabilities"}
 
-TOPIC_MODELS: list[str] = ["topic_model_regular", "topic_model_hierarchic", "topic_model_dynamic"]
+TOPIC_MODELS = ["topic_model_regular", "topic_model_hierarchic", "topic_model_dynamic"]
