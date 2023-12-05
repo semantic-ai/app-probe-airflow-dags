@@ -59,6 +59,10 @@ with DAG(
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
             "REQUEST_ENDPOINT_TAXONOMY": Variable.get("REQUEST_ENDPOINT_TAXONOMY"),
             "RUNS_DATASET_GET_LABEL": str(False),
+            "NUMBA_CACHE_DIR": "/tmp",
+            "HF_HUB_CACHE": "/tmp",
+            "HF_HOME": "/tmp",
+            "HF_ASSETS_CACHE": "/tmp",
             "LOGGING_LEVEL": "INFO",
             "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "1"
