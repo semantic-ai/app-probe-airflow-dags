@@ -25,7 +25,7 @@ with DAG(
         catchup=False,
         params={
             "train_flavour": Param("bert", enum=enums.TRAIN_FLAVOURS),
-            "dataset_type": Param("dynamic_general", enum=enums.DATASET_TYPES),
+            # "dataset_type": Param("dynamic_general", enum=enums.DATASET_TYPES),
             "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS),
             "model_id": Param(None, type=["null", "string"]),
             "train_test_split": Param(True, type="boolean"),
@@ -39,7 +39,7 @@ with DAG(
         "-m",
         "src.train_supervised_specific",
         "--train_flavour={{ params.train_flavour }}",
-        "--dataset_type={{ params.dataset_type }}",
+        "--dataset_type=dynamic_general",
         "--model_id={{ params.model_id }}",
         "--train_test_split={{ params.train_test_split }}",
         "--taxonomy_sub_node={{ params.taxonomy_sub_node }}"
