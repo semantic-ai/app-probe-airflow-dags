@@ -48,13 +48,12 @@ with DAG(
     PythonOperator(
         task_id="testing",
         op_args=[
-            "{{ params.model_conrfig }}",
+            "{{ params.model_config }}",
         ],
         python_callable=(
             lambda x: print(x)
         ),
     )
-
 
     KubernetesPodOperator(
         task_id="inference_with_config",
