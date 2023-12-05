@@ -28,18 +28,12 @@ with DAG(
         },
         tags=["inference"]
 ) as dag:
-    model_config = dag.params.get("model_config")
-    print(model_config)
-    print(type(model_config))
-
-    force_corrected_json = str(dag.params.get("model_config")).replace("'", '"')
-
     command = [
         "python",
         "-m",
         "src.inference_with_config",
         "--dataset_type={{ params.dataset_type }}",
-        f"--model_config='{force_corrected_json}'",
+        '--model_config="{{ params.model_config }}"',
         "--taxonomy_uri={{ params.taxonomy_uri }}"
 
     ]
