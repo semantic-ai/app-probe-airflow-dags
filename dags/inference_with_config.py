@@ -28,6 +28,7 @@ with DAG(
             "model_config": Param(enums.INFERENCE_CONFIG_EXAMPLE, type="object"),
             "taxonomy_uri": Param("http://stad.gent/id/concepts/business_capabilities", enum=enums.TAXONOMY_URIS),
         },
+        render_template_as_native_obj=True,
         tags=["inference"]
 ) as dag:
     command = [
@@ -39,14 +40,6 @@ with DAG(
         "--taxonomy_uri={{ params.taxonomy_uri }}"
 
     ]
-
-    @task(task_id="print_command")
-    def print_context(command):
-        """Print the Airflow context and ds variable from the context."""
-        print(command, type(command))
-        return command
-
-    run_this = print_context(command)
 
     KubernetesPodOperator(
         task_id="inference_with_config",
@@ -70,10 +63,10 @@ with DAG(
             "REQUEST_PASSWORD": Variable.get("REQUEST_PASSWORD"),
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
             "REQUEST_ENDPOINT_TAXONOMY": Variable.get("REQUEST_ENDPOINT_TAXONOMY"),
-            "RUNS_DATASET_GET_LABEL": str(False),
+            "RUNS_DATASET_GET_LABEL": "\"false\"",
             "LOGGING_LEVEL": "INFO",
             "GIT_PYTHON_REFRESH": "quiet",
-            "TQDM_DISABLE": "1"
+            "TQDM_DISABLE": "\"1\""
         },
         cmds=command
 
