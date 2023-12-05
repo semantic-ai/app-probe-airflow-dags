@@ -3,7 +3,6 @@ import logging
 import enums
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models.param import Param
 from airflow.models import Variable
@@ -29,31 +28,15 @@ with DAG(
         },
         tags=["inference"]
 ) as dag:
-    model_config = dag.params.get("model_config")
-    print(model_config)
-    print(type(model_config))
-
-    force_corrected_json = str(dag.params.get("model_config")).replace("'", '"')
-
     command = [
         "python",
         "-m",
         "src.inference_with_config",
         "--dataset_type={{ params.dataset_type }}",
-        f"--model_config='{force_corrected_json}'",
+        "--model_config={{ params.model_config }}",
         "--taxonomy_uri={{ params.taxonomy_uri }}"
 
     ]
-
-    PythonOperator(
-        task_id="testing",
-        op_args=[
-            "{{ params.model_config }}",
-        ],
-        python_callable=(
-            lambda x: print(x, type(x))
-        ),
-    )
 
     KubernetesPodOperator(
         task_id="inference_with_config",
