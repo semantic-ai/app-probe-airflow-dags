@@ -28,6 +28,7 @@ with DAG(
             "model_config": Param(enums.INFERENCE_CONFIG_EXAMPLE, type="object"),
             "taxonomy_uri": Param("http://stad.gent/id/concepts/business_capabilities", enum=enums.TAXONOMY_URIS),
         },
+        render_template_as_native_obj=True,
         tags=["inference"]
 ) as dag:
     command = [
