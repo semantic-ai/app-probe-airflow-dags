@@ -51,7 +51,7 @@ with DAG(
             "{{ params.model_config }}",
         ],
         python_callable=(
-            lambda x: print(x)
+            lambda x: print(x, type(x))
         ),
     )
 
