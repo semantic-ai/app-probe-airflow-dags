@@ -4,6 +4,7 @@ import enums
 from enums import EXTRA_ENVS
 
 from airflow import DAG
+from airflow.decorators import task
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models.param import Param
 from airflow.models import Variable
@@ -38,6 +39,14 @@ with DAG(
         "--taxonomy_uri={{ params.taxonomy_uri }}"
 
     ]
+
+    @task(task_id="print_command")
+    def print_context(command):
+        """Print the Airflow context and ds variable from the context."""
+        print(command, type(command))
+        return command
+
+    run_this = print_context(command)
 
     KubernetesPodOperator(
         task_id="inference_with_config",
