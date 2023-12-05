@@ -9,6 +9,7 @@ from airflow.models.param import Param
 from kubernetes.client import models as k8s
 
 import enums
+from enums import EXTRA_ENVS
 
 logging.basicConfig(level=logging.INFO)
 
@@ -41,6 +42,7 @@ with DAG(
         startup_timeout_seconds=480,
         container_resources=k8s.V1ResourceRequirements(limits={"cpu": "8", "memory": "8G"}, requests={"cpu": "4", "memory": "4G"}),
         env_vars={
+            **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),

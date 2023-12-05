@@ -49,3 +49,11 @@ TRAIN_FLAVOURS =[
 INFERENCE_CONFIG_EXAMPLE = {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__parent_node", "stage": "Production", "sub_nodes": [{"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__ondersteunende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_90"}, {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__sturende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_1"}, {"flavour": "huggingface_model", "model_id": "mlflow:/bert__business_capabilities__uitvoerende_capabilities", "stage": "Production", "sub_nodes": [], "uri": "http://stad.gent/id/concepts/business_capabilities/concept_13"}], "uri": "http://stad.gent/id/concepts/business_capabilities"}
 
 TOPIC_MODELS = ["topic_model_regular", "topic_model_hierarchic", "topic_model_dynamic"]
+
+
+EXTRA_ENVS = {
+    "NUMBA_CACHE_DIR": "/tmp",
+    "HF_HUB_CACHE": "/tmp",
+    "HF_HOME": "/tmp",
+    "HF_ASSETS_CACHE": "/tmp",
+}

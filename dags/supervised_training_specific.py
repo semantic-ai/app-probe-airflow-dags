@@ -1,6 +1,7 @@
 from datetime import datetime
 import logging
 import enums
+from enums import EXTRA_ENVS
 
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
@@ -59,6 +60,7 @@ with DAG(
         startup_timeout_seconds=480,
         container_resources=k8s.V1ResourceRequirements(limits={"cpu": "8", "memory": "16G"}, requests={"cpu": "4", "memory": "8G"}),
         env_vars={
+            **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),
