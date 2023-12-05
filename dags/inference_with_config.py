@@ -23,11 +23,15 @@ with DAG(
         catchup=False,
         params={
             "dataset_type": Param("m1_general", enum=enums.DATASET_TYPES),
-            "model_config": Param(enums.INFERENCE_CONFIG_EXAMPLE, type=["object", "null"]),
+            "model_config": Param(enums.INFERENCE_CONFIG_EXAMPLE, type="object"),
             "taxonomy_uri": Param("http://stad.gent/id/concepts/business_capabilities", enum=enums.TAXONOMY_URIS),
         },
         tags=["inference"]
 ) as dag:
+    model_config = dag.params.get("model_config")
+    print(model_config)
+    print(type(model_config))
+
     force_corrected_json = str(dag.params.get("model_config")).replace("'", '"')
 
     command = [
