@@ -3,6 +3,7 @@ import logging
 import enums
 
 from airflow import DAG
+from airflow.operators.python import PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models.param import Param
 from airflow.models import Variable
@@ -43,6 +44,17 @@ with DAG(
         "--taxonomy_uri={{ params.taxonomy_uri }}"
 
     ]
+
+    PythonOperator(
+        task_id="testing",
+        op_args=[
+            "{{ params.model_conrfig }}",
+        ],
+        python_callable=(
+            lambda x: print(x)
+        ),
+    )
+
 
     KubernetesPodOperator(
         task_id="inference_with_config",
