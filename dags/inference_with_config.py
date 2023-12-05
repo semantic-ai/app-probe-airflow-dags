@@ -46,7 +46,7 @@ with DAG(
         print(command, type(command))
         return command
 
-    run_this = print_context()
+    run_this = print_context(command)
 
     KubernetesPodOperator(
         task_id="inference_with_config",
