@@ -28,6 +28,7 @@ with DAG(
             "model_id": Param(None, type=["null", "string"]),
             "train_test_split": Param(True, type="boolean"),
             "use_predefined_split": Param(False, type="boolean"),
+            "max_depth": Param(2, type="integer", minimum=1, maximum=10)
         },
         tags=["training"]
 ) as dag:
@@ -39,6 +40,7 @@ with DAG(
         "--dataset_type={{ params.dataset_type }}",
         "--model_id={{ params.model_id }}",
         "--train_test_split={{ params.train_test_split }}"
+        "--max_depth={{ params.max_depth }}"
     ]
 
     if not dag.params.get("taxonomy_uri", None) is None:
