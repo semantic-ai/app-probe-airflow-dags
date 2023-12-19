@@ -56,4 +56,5 @@ EXTRA_ENVS = {
     "HF_HUB_CACHE": "/tmp",
     "HF_HOME": "/tmp",
     "HF_ASSETS_CACHE": "/tmp",
+    "TRANSFORMERS_CACHE": "/tmp"
 }
