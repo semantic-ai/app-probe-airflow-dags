@@ -53,6 +53,7 @@ with DAG(
             "REQUEST_PASSWORD": Variable.get("REQUEST_PASSWORD"),
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
             "REQUEST_ENDPOINT_TAXONOMY": Variable.get("REQUEST_ENDPOINT_TAXONOMY"),
+            "MLFLOW_TRACKING_INSECURE_TLS": "true",
             "LOGGING_LEVEL": "INFO",
             "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "1",

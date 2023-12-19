@@ -50,6 +50,7 @@ with DAG(
             "REQUEST_AUTH_TYPE": Variable.get("REQUEST_AUTH_TYPE"),
             "REQUEST_USERNAME": Variable.get("REQUEST_USERNAME"),
             "REQUEST_PASSWORD": Variable.get("REQUEST_PASSWORD"),
+            "MLFLOW_TRACKING_INSECURE_TLS": "true",
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
             "REQUEST_ENDPOINT_TAXONOMY": Variable.get("REQUEST_ENDPOINT_TAXONOMY"),
             "LOGGING_LEVEL": "INFO",
