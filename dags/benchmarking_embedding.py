@@ -44,6 +44,7 @@ with DAG(
         container_name="embedding",
         image="stadgent/probe-sparql-mono:latest",
         force_pull=True,
+        network_mode="probe",
         environment={
             **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),

@@ -39,6 +39,7 @@ with DAG(
         container_name="export",
         image="stadgent/probe-sparql-mono:latest",
         force_pull=True,
+        network_mode="probe",
         environment={
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
