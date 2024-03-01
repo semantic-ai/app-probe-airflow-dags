@@ -1,15 +1,14 @@
 from datetime import datetime
-import logging
 import enums
-from enums import EXTRA_ENVS
+import logging
 
 from airflow import DAG
-from airflow.decorators import task
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.models.param import Param
 from airflow.models import Variable
 
-from kubernetes.client import models as k8s
+from enums import EXTRA_ENVS
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -38,20 +37,14 @@ with DAG(
         "--dataset_type={{ params.dataset_type }}",
         "--model_config=\"{{ params.model_config }}\"",
         "--taxonomy_uri={{ params.taxonomy_uri }}"
-
     ]
 
-    KubernetesPodOperator(
+    DockerOperator(
         task_id="inference_with_config",
-        name="inference_with_config",
+        container_name="inference_with_config",
         image="stadgent/probe-sparql-mono:latest",
-        in_cluster=True,
-        get_logs=True,
-        image_pull_policy="Always",
-        startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "4", "memory": "24G"},
-                                                       requests={"cpu": "2", "memory": "8G"}),
-        env_vars={
+        force_pull=True,
+        environment={
             **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
@@ -69,6 +62,6 @@ with DAG(
             "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "\"1\""
         },
-        cmds=command
-
+        command=command,
+        auto_remove="force"
     )

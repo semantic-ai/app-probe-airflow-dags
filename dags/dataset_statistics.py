@@ -2,12 +2,12 @@ from datetime import datetime
 import logging
 
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.models import Variable
 from airflow.models.param import Param
 
-from kubernetes.client import models as k8s
 from enums import EXTRA_ENVS
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,7 +15,6 @@ default_args = {
     "start_date": datetime(2023, 1, 1),
     "owner": "Airflow",
 }
-
 
 with DAG(
     dag_id="dataset_statistics",
@@ -27,16 +26,19 @@ with DAG(
     },
     tags=["dataset"]
 ) as dag:
-    KubernetesPodOperator(
+    command = [
+        "python",
+        "-m",
+        "src.dataset_statistics",
+        "--max_level={{ params.max_depth }}"
+    ]
+
+    DockerOperator(
         task_id="dataset_statistics",
-        name="statistics",
+        container_name="statistics",
         image="stadgent/probe-sparql-mono:latest",
-        in_cluster=True,
-        get_logs=True,
-        image_pull_policy="Always",
-        startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "1", "memory": "8G"}, requests={"cpu": "500m", "memory": "4G"}),
-        env_vars={
+        force_pull=True,
+        environment={
             **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
@@ -54,10 +56,6 @@ with DAG(
             "TQDM_DISABLE": "1",
             "PYTHONWARNINGS": "ignore"
         },
-        cmds=[
-            "python",
-            "-m",
-            "src.dataset_statistics",
-            "--max_level={{ params.max_depth }}"
-        ]
+        command=command,
+        auto_remove="force"
     )

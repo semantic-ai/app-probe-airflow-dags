@@ -2,10 +2,9 @@ from datetime import datetime
 import logging
 
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.models import Variable
 
-from kubernetes.client import models as k8s
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,17 +20,14 @@ with DAG(
         catchup=False,
         tags=["tests"]
 ) as dag:
-    KubernetesPodOperator(
+    command = ["python", "-m", "unittest"]
+
+    DockerOperator(
         task_id="test",
-        name="test",
-        namespace="probe",
+        container_name="test",
         image="stadgent/probe-sparql-mono:latest",
-        in_cluster=True,
-        get_logs=True,
-        image_pull_policy="Always",
-        startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "2", "memory": "8G"}, requests={"cpu": "1", "memory": "4G"}),
-        env_vars={
+        force_pull=True,
+        environment={
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),
@@ -44,5 +40,6 @@ with DAG(
             "TESTING": "test",
             "GIT_PYTHON_REFRESH": "quiet"
         },
-        cmds=["python", "-m", "unittest"]
+        command=command,
+        auto_remove="force"
     )

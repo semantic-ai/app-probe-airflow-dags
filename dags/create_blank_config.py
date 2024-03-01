@@ -2,10 +2,9 @@ from datetime import datetime
 import logging
 
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.models import Variable
 
-from kubernetes.client import models as k8s
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,7 +12,6 @@ default_args = {
     "start_date": datetime(2023, 1, 1),
     "owner": "Airflow",
 }
-
 
 with DAG(
     dag_id="blank_config",
@@ -23,16 +21,18 @@ with DAG(
     params={},
     tags=["helper"]
 ) as dag:
-    KubernetesPodOperator(
+    command = [
+        "python",
+        "-m",
+        "src.create_blank_config"
+    ]
+
+    DockerOperator(
         task_id="blank_config",
-        name="blank_config",
+        container_name="blank_config",
         image="stadgent/probe-sparql-mono:latest",
-        in_cluster=True,
-        get_logs=True,
-        image_pull_policy="Always",
-        startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "1", "memory": "8G"}, requests={"cpu": "500m", "memory": "4G"}),
-        env_vars={
+        force_pull=True,
+        environment={
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
             "MLFLOW_TRACKING_USERNAME": Variable.get("MLFLOW_TRACKING_USERNAME"),
@@ -49,9 +49,6 @@ with DAG(
             "TQDM_DISABLE": "1",
             "PYTHONWARNINGS": "ignore"
         },
-        cmds=[
-            "python",
-            "-m",
-            "src.create_blank_config"
-        ]
+        command=command,
+        auto_remove="force"
     )

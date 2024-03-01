@@ -1,14 +1,13 @@
 from datetime import datetime
-import logging
 import enums
-from enums import EXTRA_ENVS
+import logging
 
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.models import Variable
-
-from kubernetes.client import models as k8s
 from airflow.models.param import Param
+
+from enums import EXTRA_ENVS
 
 
 logging.basicConfig(level=logging.INFO)
@@ -51,16 +50,12 @@ with DAG(
     if not dag.params.get("taxonomy_sub_node", None) is None:
         command += ["--taxonomy_sub_node={{ params.taxonomy_sub_node }}"]
 
-    KubernetesPodOperator(
+    DockerOperator(
         task_id="train_supervised_node",
-        name="train_supervised_node",
+        container_name="train_supervised_node",
         image="stadgent/probe-sparql-mono:latest",
-        in_cluster=True,
-        get_logs=True,
-        image_pull_policy="Always",
-        startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "4", "memory": "16G"}, requests={"cpu": "4", "memory": "8G"}),
-        env_vars={
+        force_pull=True,
+        environment={
             **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
@@ -78,6 +73,6 @@ with DAG(
             "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "1"
         },
-        cmds=command
-
+        command=command,
+        auto_remove="force"
     )

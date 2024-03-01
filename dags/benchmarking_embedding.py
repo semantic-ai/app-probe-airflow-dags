@@ -1,14 +1,14 @@
 from datetime import datetime
-import logging
 import enums
-from enums import EXTRA_ENVS
+import logging
 
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.models import Variable
 from airflow.models.param import Param
 
-from kubernetes.client import models as k8s
+from enums import EXTRA_ENVS
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -16,7 +16,6 @@ default_args = {
     "start_date": datetime(2023, 1, 1),
     "owner": "Airflow",
 }
-
 
 with DAG(
     dag_id="benchmark_embedding",
@@ -31,16 +30,21 @@ with DAG(
     },
     tags=["benchmarking"]
 ) as dag:
-    KubernetesPodOperator(
+    command = [
+        "python",
+        "-m",
+        "src.benchmarking",
+        "--model_types={{ params.model_types }}",
+        "--dataset_types={{ params.dataset_types }}",
+        "--model_ids={{ params.model_ids }}"
+    ]
+
+    DockerOperator(
         task_id="benchmark_embedding",
-        name="embedding",
+        container_name="embedding",
         image="stadgent/probe-sparql-mono:latest",
-        in_cluster=True,
-        get_logs=True,
-        image_pull_policy="Always",
-        startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "4", "memory": "12G"}, requests={"cpu": "4", "memory": "4G"}),
-        env_vars={
+        force_pull=True,
+        environment={
             **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
@@ -58,12 +62,6 @@ with DAG(
             "TQDM_DISABLE": "1",
             "PYTHONWARNINGS": "ignore"
         },
-        cmds=[
-            "python",
-            "-m",
-            "src.benchmarking",
-            "--model_types={{ params.model_types }}",
-            "--dataset_types={{ params.dataset_types }}",
-            "--model_ids={{ params.model_ids }}"
-        ]
+        command=command,
+        auto_remove="force"
     )
