@@ -53,8 +53,8 @@ TOPIC_MODELS = ["topic_model_regular", "topic_model_hierarchic", "topic_model_dy
 
 EXTRA_ENVS = {
     "NUMBA_CACHE_DIR": "/tmp",
-    "HF_HUB_CACHE": "/tmp",
-    "HF_HOME": "/tmp",
-    "HF_ASSETS_CACHE": "/tmp",
+    "HF_HUB_CACHE": "/tmp/hub",
+    "HF_HOME": "/tmp/huggingface",
+    "HF_ASSETS_CACHE": "/tmp/assets",
     "TRANSFORMERS_CACHE": "/tmp"
 }
