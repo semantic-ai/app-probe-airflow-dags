@@ -40,7 +40,7 @@ with DAG(
         "--train_flavour={{ params.train_flavour }}",
         "--dataset_type=dynamic_general",
         "--model_id={{ params.model_id }}",
-        "--train_test_split={{ params.train_test_split }}"
+        "--train_test_split={{ params.train_test_split }}",
         "--max_depth={{ params.max_depth }}"
     ]
 
