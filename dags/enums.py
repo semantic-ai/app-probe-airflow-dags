@@ -56,5 +56,5 @@ EXTRA_ENVS = {
     "HF_HOME": "/tmp/huggingface",
     "HF_ASSETS_CACHE": "/tmp/assets",
     "TRANSFORMERS_CACHE": "/tmp",
-    "DATA_MAX_LIMIT": 150
+    "DATA_MAX_LIMIT": "150"
 }
