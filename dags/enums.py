@@ -38,8 +38,7 @@ EMBEDDING_MODELS = [
 ZEROSHOT_MODELS = [
     "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
     "facebook/bart-large-mnli",
-    "mjwong/multilingual-e5-base-xnli-anli",
-    "joeddav/xlm-roberta-large-xnli"
+    "mjwong/multilingual-e5-base-xnli-anli"
 ]
 
 TRAIN_FLAVOURS =[
