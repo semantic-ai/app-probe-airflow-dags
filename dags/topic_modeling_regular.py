@@ -35,7 +35,6 @@ with DAG(
         "src.topic_modeling",
         "--dataset_type={{ params.dataset_type }}",
         "--model_type=topic_model_regular"
-
     ]
 
     KubernetesPodOperator(
