@@ -25,7 +25,8 @@ DATASET_TYPES = [
 TAXONOMY_URIS = [
     "http://stad.gent/id/concepts/gent_words",
     "http://stad.gent/id/concepts/policy_domains_themes",
-    "http://stad.gent/id/concepts/business_capabilities"
+    "http://stad.gent/id/concepts/business_capabilities",
+    "http://stad.gent/id/concepts/decision_making_themes"
 ]
 
 EMBEDDING_MODELS = [
