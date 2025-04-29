@@ -1,13 +1,12 @@
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
 from airflow.models.param import Param
-
-from kubernetes.client import models as k8s
+from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from enums import EXTRA_ENVS
+from kubernetes.client import models as k8s
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,10 +21,8 @@ with DAG(
     schedule_interval="@once",
     default_args=default_args,
     catchup=False,
-    params={
-        "max_depth": Param(4, type="integer", minimum=1, maximum=10)
-    },
-    tags=["dataset"]
+    params={"max_depth": Param(4, type="integer", minimum=1, maximum=10)},
+    tags=["dataset"],
 ) as dag:
     KubernetesPodOperator(
         task_id="dataset_statistics",
@@ -35,7 +32,10 @@ with DAG(
         get_logs=True,
         image_pull_policy="Always",
         startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "1", "memory": "8G"}, requests={"cpu": "500m", "memory": "4G"}),
+        container_resources=k8s.V1ResourceRequirements(
+            limits={"cpu": "1", "memory": "8G"},
+            requests={"cpu": "500m", "memory": "4G"},
+        ),
         env_vars={
             **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
@@ -52,12 +52,12 @@ with DAG(
             "LOGGING_LEVEL": "INFO",
             "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "1",
-            "PYTHONWARNINGS": "ignore"
+            "PYTHONWARNINGS": "ignore",
         },
         cmds=[
             "python",
             "-m",
             "src.dataset_statistics",
-            "--max_level={{ params.max_depth }}"
-        ]
+            "--max_level={{ params.max_depth }}",
+        ],
     )

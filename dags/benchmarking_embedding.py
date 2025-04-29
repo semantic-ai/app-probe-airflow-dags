@@ -1,13 +1,12 @@
-from datetime import datetime
 import logging
-import enums
-from enums import EXTRA_ENVS
+from datetime import datetime
 
+import enums
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
 from airflow.models.param import Param
-
+from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
+from enums import EXTRA_ENVS
 from kubernetes.client import models as k8s
 
 logging.basicConfig(level=logging.INFO)
@@ -24,12 +23,21 @@ with DAG(
     default_args=default_args,
     catchup=False,
     params={
-        "model_types": Param(["embedding"], type="array", examples=[t for t in enums.MODEL_TYPES if t.startswith("embedding")] + ["embedding"]),
-        "dataset_types": Param(["m1"], type="array", examples=enums.DATASET_TYPES + ["m1", "m2"]),
-        "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS),
-        "model_ids": enums.EMBEDDING_MODELS
+        "model_types": Param(
+            ["embedding"],
+            type="array",
+            examples=[t for t in enums.MODEL_TYPES if t.startswith("embedding")]
+            + ["embedding"],
+        ),
+        "dataset_types": Param(
+            ["m1"], type="array", examples=enums.DATASET_TYPES + ["m1", "m2"]
+        ),
+        "taxonomy_uri": Param(
+            "http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS
+        ),
+        "model_ids": enums.EMBEDDING_MODELS,
     },
-    tags=["benchmarking"]
+    tags=["benchmarking"],
 ) as dag:
     KubernetesPodOperator(
         task_id="benchmark_embedding",
@@ -39,7 +47,9 @@ with DAG(
         get_logs=True,
         image_pull_policy="Always",
         startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "2", "memory": "12G"}, requests={"cpu": "2", "memory": "4G"}),
+        container_resources=k8s.V1ResourceRequirements(
+            limits={"cpu": "2", "memory": "12G"}, requests={"cpu": "2", "memory": "4G"}
+        ),
         env_vars={
             **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
@@ -56,7 +66,7 @@ with DAG(
             "LOGGING_LEVEL": "INFO",
             "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "1",
-            "PYTHONWARNINGS": "ignore"
+            "PYTHONWARNINGS": "ignore",
         },
         cmds=[
             "python",
@@ -64,6 +74,6 @@ with DAG(
             "src.benchmarking",
             "--model_types={{ params.model_types }}",
             "--dataset_types={{ params.dataset_types }}",
-            "--model_ids={{ params.model_ids }}"
-        ]
+            "--model_ids={{ params.model_ids }}",
+        ],
     )

@@ -1,15 +1,13 @@
-from datetime import datetime
 import logging
+from datetime import datetime
+
 import enums
-from enums import EXTRA_ENVS
-
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
-
-from kubernetes.client import models as k8s
 from airflow.models.param import Param
-
+from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
+from enums import EXTRA_ENVS
+from kubernetes.client import models as k8s
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,20 +17,22 @@ default_args = {
 }
 
 with DAG(
-        dag_id="node_training",
-        schedule_interval=None,
-        default_args=default_args,
-        catchup=False,
-        params={
-            "train_flavour": Param("bert", enum=enums.TRAIN_FLAVOURS),
-            # "dataset_type": Param("dynamic_general", enum=enums.DATASET_TYPES),
-            "taxonomy_uri": Param("http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS),
-            "model_id": Param(None, type=["null", "string"]),
-            "train_test_split": Param(True, type="boolean"),
-            "taxonomy_sub_node": Param(None, type=["null", "string"]),
-            "use_predefined_split": Param(False, type="boolean"),
-        },
-        tags=["training"]
+    dag_id="node_training",
+    schedule_interval=None,
+    default_args=default_args,
+    catchup=False,
+    params={
+        "train_flavour": Param("bert", enum=enums.TRAIN_FLAVOURS),
+        # "dataset_type": Param("dynamic_general", enum=enums.DATASET_TYPES),
+        "taxonomy_uri": Param(
+            "http://stad.gent/id/concepts/gent_words", enum=enums.TAXONOMY_URIS
+        ),
+        "model_id": Param(None, type=["null", "string"]),
+        "train_test_split": Param(True, type="boolean"),
+        "taxonomy_sub_node": Param(None, type=["null", "string"]),
+        "use_predefined_split": Param(False, type="boolean"),
+    },
+    tags=["training"],
 ) as dag:
     command = [
         "python",
@@ -42,13 +42,13 @@ with DAG(
         "--dataset_type=dynamic_general",
         "--model_id={{ params.model_id }}",
         "--train_test_split={{ params.train_test_split }}",
-        "--taxonomy_sub_node={{ params.taxonomy_sub_node }}"
+        "--taxonomy_sub_node={{ params.taxonomy_sub_node }}",
     ]
 
-    if not dag.params.get("taxonomy_uri", None) is None:
+    if dag.params.get("taxonomy_uri", None) is not None:
         command += ["--taxonomy_url={{ params.taxonomy_uri }}"]
 
-    if not dag.params.get("taxonomy_sub_node", None) is None:
+    if dag.params.get("taxonomy_sub_node", None) is not None:
         command += ["--taxonomy_sub_node={{ params.taxonomy_sub_node }}"]
 
     KubernetesPodOperator(
@@ -59,7 +59,9 @@ with DAG(
         get_logs=True,
         image_pull_policy="Always",
         startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "2", "memory": "16G"}, requests={"cpu": "2", "memory": "8G"}),
+        container_resources=k8s.V1ResourceRequirements(
+            limits={"cpu": "2", "memory": "16G"}, requests={"cpu": "2", "memory": "8G"}
+        ),
         env_vars={
             **EXTRA_ENVS,
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
@@ -72,12 +74,13 @@ with DAG(
             "REQUEST_PASSWORD": Variable.get("REQUEST_PASSWORD"),
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
             "REQUEST_ENDPOINT_TAXONOMY": Variable.get("REQUEST_ENDPOINT_TAXONOMY"),
-            "RUNS_DATASET_USE_PREDEFINED_SPLIT": str(dag.params.get("use_predefined_split", False)),
+            "RUNS_DATASET_USE_PREDEFINED_SPLIT": str(
+                dag.params.get("use_predefined_split", False)
+            ),
             "MLFLOW_TRACKING_INSECURE_TLS": "true",
             "LOGGING_LEVEL": "INFO",
             "GIT_PYTHON_REFRESH": "quiet",
-            "TQDM_DISABLE": "1"
+            "TQDM_DISABLE": "1",
         },
-        cmds=command
-
+        cmds=command,
     )

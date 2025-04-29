@@ -1,10 +1,9 @@
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
-
+from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from kubernetes.client import models as k8s
 
 logging.basicConfig(level=logging.INFO)
@@ -21,7 +20,7 @@ with DAG(
     default_args=default_args,
     catchup=False,
     params={},
-    tags=["helper"]
+    tags=["helper"],
 ) as dag:
     KubernetesPodOperator(
         task_id="blank_config",
@@ -31,7 +30,10 @@ with DAG(
         get_logs=True,
         image_pull_policy="Always",
         startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "1", "memory": "8G"}, requests={"cpu": "500m", "memory": "4G"}),
+        container_resources=k8s.V1ResourceRequirements(
+            limits={"cpu": "1", "memory": "8G"},
+            requests={"cpu": "500m", "memory": "4G"},
+        ),
         env_vars={
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
@@ -47,11 +49,7 @@ with DAG(
             "LOGGING_LEVEL": "INFO",
             "GIT_PYTHON_REFRESH": "quiet",
             "TQDM_DISABLE": "1",
-            "PYTHONWARNINGS": "ignore"
+            "PYTHONWARNINGS": "ignore",
         },
-        cmds=[
-            "python",
-            "-m",
-            "src.create_blank_config"
-        ]
+        cmds=["python", "-m", "src.create_blank_config"],
     )

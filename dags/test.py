@@ -1,10 +1,9 @@
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.models import Variable
-
+from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from kubernetes.client import models as k8s
 
 logging.basicConfig(level=logging.INFO)
@@ -15,11 +14,11 @@ default_args = {
 }
 
 with DAG(
-        dag_id="test",
-        schedule_interval="@daily",
-        default_args=default_args,
-        catchup=False,
-        tags=["tests"]
+    dag_id="test",
+    schedule_interval="@daily",
+    default_args=default_args,
+    catchup=False,
+    tags=["tests"],
 ) as dag:
     KubernetesPodOperator(
         task_id="test",
@@ -30,7 +29,9 @@ with DAG(
         get_logs=True,
         image_pull_policy="Always",
         startup_timeout_seconds=480,
-        container_resources=k8s.V1ResourceRequirements(limits={"cpu": "2", "memory": "8G"}, requests={"cpu": "1", "memory": "4G"}),
+        container_resources=k8s.V1ResourceRequirements(
+            limits={"cpu": "2", "memory": "8G"}, requests={"cpu": "1", "memory": "4G"}
+        ),
         env_vars={
             "RUNS_MODEL_PULL_TOKEN": Variable.get("RUNS_MODEL_PULL_TOKEN"),
             "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
@@ -42,7 +43,7 @@ with DAG(
             "REQUEST_ENDPOINT_DECISION": Variable.get("REQUEST_ENDPOINT_DECISION"),
             "REQUEST_ENDPOINT_TAXONOMY": Variable.get("REQUEST_ENDPOINT_TAXONOMY"),
             "TESTING": "test",
-            "GIT_PYTHON_REFRESH": "quiet"
+            "GIT_PYTHON_REFRESH": "quiet",
         },
-        cmds=["python", "-m", "unittest"]
+        cmds=["python", "-m", "unittest"],
     )
