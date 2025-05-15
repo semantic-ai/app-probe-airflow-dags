@@ -50,7 +50,7 @@ with DAG(
         image_pull_policy="Always",
         startup_timeout_seconds=480,
         container_resources=k8s.V1ResourceRequirements(
-            limits={"cpu": "2", "memory": "24G"}, requests={"cpu": "2", "memory": "8G"}
+            limits={"cpu": "4", "memory": "24G"}, requests={"cpu": "2", "memory": "8G"}
         ),
         env_vars={
             **EXTRA_ENVS,
